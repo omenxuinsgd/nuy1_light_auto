@@ -1,0 +1,5 @@
+{
+  "com_port": "COM13",
+  "baud_rate": 9600,
+  "check_interval": 2
+}
