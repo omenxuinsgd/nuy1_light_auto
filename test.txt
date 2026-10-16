@@ -1,0 +1,43 @@
+$path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"
+$activeApps = @{}
+
+Write-Host "=== MEMULAI MONITORING KAMERA REAL-TIME ===" -ForegroundColor Cyan
+Write-Host "Tekan Ctrl+C untuk berhenti." -ForegroundColor Yellow
+Write-Host "-------------------------------------------"
+
+while ($true) {
+    $currentApps = @{}
+    
+    # Ambil semua data webcam
+    $items = Get-ChildItem -Path $path -Recurse | Get-ItemProperty | Where-Object {$_.LastUsedTimeStart -gt 0}
+    
+    foreach ($item in $items) {
+        $appName = $item.PSChildName
+        $stopTime = $item.LastUsedTimeStop
+        
+        # Jika LastUsedTimeStop = 0, berarti SEDANG DIGUNAKAN
+        if ($stopTime -eq 0) {
+            $currentApps[$appName] = $true
+            
+            # Cek apakah aplikasi ini baru saja START
+            if (-not $activeApps.ContainsKey($appName)) {
+                $waktu = Get-Date -Format "HH:mm:ss"
+                Write-Host "[$waktu] 🟢 START : $appName" -ForegroundColor Green
+                $activeApps[$appName] = $true
+            }
+        }
+    }
+    
+    # --- PERBAIKAN DI SINI ---
+    # Kita buat salinan daftar kunci (@(...)) agar aman saat dihapus
+    foreach ($app in @($activeApps.Keys)) {
+        if (-not $currentApps.ContainsKey($app)) {
+            $waktu = Get-Date -Format "HH:mm:ss"
+            Write-Host "[$waktu] 🔴 STOP  : $app" -ForegroundColor Red
+            $activeApps.Remove($app)
+        }
+    }
+    # -------------------------
+    
+    Start-Sleep -Seconds 2
+}

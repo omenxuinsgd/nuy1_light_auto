@@ -1,5 +1,8 @@
 {
-  "com_port": "COM13",
+  "com_port": "COM11",
   "baud_rate": 9600,
-  "check_interval": 2
+  "check_interval": 2,
+  "led_pin": 9,
+  "brightness": 255,
+  "brightness_step": 5
 }

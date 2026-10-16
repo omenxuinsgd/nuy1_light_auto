@@ -43,7 +43,7 @@ except ImportError:
 
 # ================= KONFIGURASI DEFAULT =================
 DEFAULT_CONFIG = {
-    "com_port": "COM12",
+    "com_port": "COM6",
     "baud_rate": 9600,
     "check_interval": 2,
 }
